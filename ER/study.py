@@ -45,6 +45,7 @@ def find_stats_for_one_rating_number(ms, rating, ratingNumber, d1, d2, d3):
     print("\nStat Summary for the Stock List:")
     print(stock_stats.describe())
     print("\nSkipped Symbols: {}".format(skipped_symbols))
+    stock_stats.to_csv('data/{}_{}.csv'.format(rating, ratingNumber))
 
     return (stock_stats['Correction'].mean(), stock_stats['Correction'].max(), stock_stats['Correction'].min(),
             stock_stats['Advance'].mean(), stock_stats['Advance'].max(), stock_stats['Advance'].min(),
