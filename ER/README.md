@@ -19,6 +19,6 @@ This is what I found:
 ![erplot](erplot.png)
 
 As can be seen in the above chart, it really does not matter what EPS Rating is, the average correction, average 
-advance and average recovery is same (with some randomness factor). 
+advance and average recovery are same (with some randomness factor). 
 
 No correlation at all. Stocks with higher EPS Ratings had no edge at all. 
