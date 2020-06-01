@@ -69,5 +69,6 @@ node_modules
 .babelrc
 .nvmrc
 ./dist/**
-./msdata/**
-./pricedata/**
+msdata/
+pricedata/
+.ipynb_checkpoints/
