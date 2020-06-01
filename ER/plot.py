@@ -11,5 +11,5 @@ ax = er_stats.plot(title="EPS Rating Study", x="ER", figsize=(15, 9), grid=True,
 # ax is of type matplotlib.axes.AxesSubplot
 ax.set_ylabel("% Change")
 ax.set_xlabel("EPS Rating")
-plt.savefig("epsplot.png")
+plt.savefig("erplot.png")
 plt.show()
