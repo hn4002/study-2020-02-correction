@@ -101,7 +101,7 @@ def study_all(ms):
 
 # =======================================================================================================================
 def run():
-    # ms = pd.read_excel('msdata/2020-02-19-ms.xlsx', index_col=0)
+    # ms = pandas.read_excel('msdata/2020-02-19-ms.xlsx', index_col=0)
     ms = pandas.read_csv('msdata/2020-02-19-ms.csv', index_col=0)
     study_all(ms)
 
