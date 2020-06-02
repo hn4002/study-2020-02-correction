@@ -71,6 +71,7 @@ node_modules
 ./dist/**
 msdata/
 pricedata/
-**/msdata
-**/pricedata
+**/msdata*
+**/pricedata*
 .ipynb_checkpoints/
+**/__pycache__/**
