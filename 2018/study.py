@@ -122,7 +122,8 @@ def find_plot_data_one_criteria(ms, duration, criteria):
     ax.set_xlabel(criteria['display_name'])
     print("Saving plot. Filename: {}".format(out_png_file))
     plt.savefig(out_png_file)
-
+    # Close the figures, otherwise they are kept in memory
+    plt.close('all')
 
 # =======================================================================================================================
 def study_all():
