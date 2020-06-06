@@ -1,3 +1,5 @@
+import glob
+import os
 import pandas
 import matplotlib.pyplot as plt
 from study_params import duration_list, criteria_list
@@ -8,6 +10,42 @@ pandas.set_option('display.width', None)
 pandas.set_option('display.max_columns', None)
 pandas.set_option('display.max_rows', None)
 
+
+# =======================================================================================================================
+def get_price_data_wld(symbol, snapshot_date):
+    """
+    Get Price Data from WLD
+    :param symbol:  AAPL
+    :param snapshot_date: Example: 20190524
+    :return:
+    """
+    pricedatafile = 'data/pricedata-{}/{}.csv'.format(snapshot_date, symbol)
+    pricedata = pandas.read_csv(pricedatafile, names=['Date', 'Open', 'High', 'Low', 'Close', 'Volume'])
+    return pricedata
+
+# =======================================================================================================================
+def get_pricedata_ngd(symbol, snapshot_date):
+    """
+    Get Price Data from NGD. Uses delisted stocks as well.
+    :param symbol: AAPL
+    :param snapshot_date: 20190524
+    :return:
+    """
+    # First check in ngdata/stocks directory
+    pricedatafile = 'data/ngdata/stocks/{}.csv'.format(symbol)
+    if not os.path.exists(pricedatafile):
+        # Next check in ngdata/stocks-delisted directory
+        delistedPattern = 'data/ngdata/stocks-delisted/{}-*.csv'.format(symbol)
+        files = glob.glob(delistedPattern)
+        if len(files) == 0:
+            return None
+        # Keeping it simple - if there are two matches, then we are picking the latest one. Ideally, I will like to pick
+        # the one which matches closest to the snapshot_date. Something to do sometime later.
+        if len(files) > 1:
+            files.sort()
+        pricedatafile = files[len(files)-1]
+    pricedata = pandas.read_csv(pricedatafile)
+    return pricedata
 
 # =======================================================================================================================
 def find_stats_for_one_criteria_one_score(ms_df, duration, criteria_name, score):
@@ -23,8 +61,7 @@ def find_stats_for_one_criteria_one_score(ms_df, duration, criteria_name, score)
     for symbol in symbols_col:
         # print(symbol)
         try:
-            pricedatafile = 'pricedata-{}/{}.csv'.format(duration['pricedata_date'], symbol)
-            pricedata = pandas.read_csv(pricedatafile, names=['Date', 'Open', 'High', 'Low', 'Close', 'Volume'])
+            pricedata = get_price_data_wld(symbol, duration['pricedata_date'])
             p1 = pricedata.query('Date==' + duration['start_date'])['Open'].item()
             p2 = pricedata.query('Date==' + duration['end_date'])['Open'].item()
         except:
@@ -72,24 +109,30 @@ def find_plot_data_one_criteria(ms, duration, criteria):
           format(duration['display_name'], criteria['criteria_name']))
     print(rating_stats)
 
-    # Print CSV and PNG files
-    out_file_prefix = "{}-{}".format(duration['display_name'], criteria['criteria_name'])
-
     # Save stats to CSV file for later processing
-    rating_stats.to_csv('{}-stats.csv'.format(out_file_prefix))
+    out_csv_file = 'results/stats-{}-{}.csv'.format(duration['display_name'], criteria['criteria_name'])
+    print("Writing to {}".format(out_csv_file))
+    rating_stats.to_csv(out_csv_file)
 
     # save plot of stats to PNG fie for immediate observation
+    out_png_file = "results/plot-{}-{}.png".format(duration['display_name'], criteria['criteria_name'])
     title = "{} / {} Vs Price Change %".format(duration['display_name'], criteria['display_name'])
-    ax = rating_stats.plot(title=title, x="EPS Rating", y="Avg. Advance", figsize=(15, 9), grid=True, legend=True)
+    ax = rating_stats.plot(title=title, x=criteria['display_name'], y="Avg. Advance", figsize=(15, 9), grid=True, legend=True)
     ax.set_ylabel("Price Change %")
     ax.set_xlabel(criteria['display_name'])
-    plt.savefig("{}-plot.png".format(out_file_prefix))
+    print("Saving plot. Filename: {}".format(out_png_file))
+    plt.savefig(out_png_file)
 
 
 # =======================================================================================================================
 def study_all():
+    # Make sure output directories are created.
+    if not os.path.exists("results"):
+        os.mkdir("results")
+
+    # For each duration, plot each criteria.
     for duration in duration_list:
-        msdata_file = "msdata/{}-ms.csv".format(duration['msdata_date'])
+        msdata_file = "data/msdata/{}-ms.csv".format(duration['msdata_date'])
         ms = pandas.read_csv(msdata_file, index_col=0)
         ms.rename(columns={
             'EPS Rating': 'EPSRating',
