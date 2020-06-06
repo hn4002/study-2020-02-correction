@@ -1,14 +1,4 @@
 
-duration_list1 = [
-    {
-        # Q1
-        'start_date': '20190107',
-        'end_date': '20190408',
-        'display_name': 'Q1-2019',
-        'msdata_date': '20190104',
-        'pricedata_date': '20190517',
-    }
-]
 
 duration_list = [
     {
@@ -67,14 +57,6 @@ duration_list = [
         'msdata_date': '20190104',
         'pricedata_date': '20200110',
     },
-]
-
-criteria_list1 = [
-    {
-        'criteria_name': 'EPSRating',
-        'display_name': 'EPS Rating',
-        'score_buckets': range(98, 100),
-    }
 ]
 
 criteria_list = [
